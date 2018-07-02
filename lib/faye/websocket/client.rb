@@ -46,11 +46,11 @@ module Faye
             @driver.emit(:error, error)
           end
         end
-
+        this = self
         Thread.new{
           EM.run{
             EventMachine.connect(endpoint.host, port, Connection) do |conn|
-              conn.parent = self
+              conn.parent = this
             end
           }
         }

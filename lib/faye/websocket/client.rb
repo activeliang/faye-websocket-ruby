@@ -47,9 +47,13 @@ module Faye
           end
         end
 
-        EventMachine.connect(endpoint.host, port, Connection) do |conn|
-          conn.parent = self
-        end
+        Thread.new{
+          EM.run{
+            EventMachine.connect(endpoint.host, port, Connection) do |conn|
+              conn.parent = self
+            end
+          }
+        }
       rescue => error
         emit_error("Network error: #{url}: #{error.message}")
         finalize_close
